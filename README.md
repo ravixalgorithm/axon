@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Axon
+
+Upload UI design screenshots → Extract design tokens → Generate AI prompts for code generation.
+
+## Features
+
+- 🎨 **Design Token Extraction** - Colors, typography, spacing, animations, shadows, border radius
+- 📝 **AI Prompt Generation** - Detailed prompts for recreating designs with React + Tailwind
+- 📋 **Copy to Clipboard** - One-click copy of generated prompts
+- ⬇️ **JSON Export** - Download tokens and prompts as JSON
+- 🖼️ **Drag & Drop Upload** - Easy image upload with preview
+- 📱 **Responsive Design** - Works on desktop and mobile
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Perplexity Sonar API (Vision)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/ravixalgorithm/axon.git
+cd axon
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Copy the example environment file and add your Perplexity API key:
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and add your API key:
+
+```
+PERPLEXITY_API_KEY=pplx-xxxxxxxxxxxxxxxxxxxxx
+```
+
+Get your API key from: https://www.perplexity.ai/settings/api
+
+### 4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Upload** - Drag and drop or click to upload a UI screenshot (PNG, JPG, WEBP, GIF up to 50MB)
+2. **Analyze** - Click "Analyze Design" to extract tokens
+3. **View Results** - See extracted colors, typography, spacing, and more
+4. **Copy/Download** - Copy the prompt or download everything as JSON
 
-## Learn More
+## Deploy to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+1. Push your code to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new)
+3. Import your repository
+4. Add environment variable: `PERPLEXITY_API_KEY`
+5. Deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
