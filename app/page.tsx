@@ -2,21 +2,23 @@
 
 import { useState, useRef, useCallback } from "react";
 
-// Type definitions
+// Type definitions - flexible to handle various API response formats
 interface ColorToken {
   name: string;
   hex: string;
 }
 
+// Typography can be either simple strings or nested objects
 interface TypographyToken {
-  headings: string;
-  body: string;
-  weights: string[];
+  headings?: string | Record<string, string>;
+  body?: string | Record<string, string>;
+  weights?: string[];
+  [key: string]: unknown; // Allow additional fields
 }
 
 interface DesignTokens {
   colors: ColorToken[];
-  typography: TypographyToken;
+  typography: TypographyToken | Record<string, unknown>;
   spacing: string[];
   animations: string[];
   elevation: string[];
@@ -26,6 +28,38 @@ interface DesignTokens {
 interface AnalysisResult {
   tokens: DesignTokens;
   prompt: string;
+}
+
+// Helper function to safely render any value as a string
+function renderValue(value: unknown): string {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map(renderValue).join(", ");
+  }
+  if (typeof value === "object") {
+    return Object.entries(value)
+      .map(([k, v]) => `${k}: ${renderValue(v)}`)
+      .join("; ");
+  }
+  return String(value);
+}
+
+// Helper function to render typography section
+function renderTypography(typography: TypographyToken | Record<string, unknown>): React.ReactElement[] {
+  const entries = Object.entries(typography);
+  return entries.map(([key, value], index) => (
+    <p key={index}>
+      <strong style={{ textTransform: "capitalize" }}>{key}:</strong> {renderValue(value)}
+    </p>
+  ));
 }
 
 export default function Home() {
@@ -153,6 +187,15 @@ export default function Home() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  // Helper to safely render array items
+  const safeArray = (arr: unknown): string[] => {
+    if (!arr) return [];
+    if (Array.isArray(arr)) {
+      return arr.map((item) => renderValue(item));
+    }
+    return [];
   };
 
   return (
@@ -561,86 +604,88 @@ export default function Home() {
                   <h2 className="card-title">🎨 Design Tokens</h2>
 
                   {/* Colors */}
-                  <div className="section">
-                    <h3 className="section-title">Colors</h3>
-                    <div className="colors-grid">
-                      {result.tokens.colors.map((color, index) => (
-                        <div key={index} className="color-swatch">
-                          <div className="color-preview" style={{ backgroundColor: color.hex }}></div>
-                          <div className="color-info">
-                            <div className="color-name">{color.name}</div>
-                            <div className="color-hex">{color.hex}</div>
+                  {result.tokens.colors && result.tokens.colors.length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Colors</h3>
+                      <div className="colors-grid">
+                        {result.tokens.colors.map((color, index) => (
+                          <div key={index} className="color-swatch">
+                            <div className="color-preview" style={{ backgroundColor: color.hex || "#ccc" }}></div>
+                            <div className="color-info">
+                              <div className="color-name">{color.name || "Unknown"}</div>
+                              <div className="color-hex">{color.hex || "N/A"}</div>
+                            </div>
                           </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Typography */}
+                  {result.tokens.typography && Object.keys(result.tokens.typography).length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Typography</h3>
+                      <div className="info-box">{renderTypography(result.tokens.typography)}</div>
+                    </div>
+                  )}
+
+                  {/* Spacing */}
+                  {safeArray(result.tokens.spacing).length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Spacing Scale</h3>
+                      <div className="tag-list">
+                        {safeArray(result.tokens.spacing).map((space, index) => (
+                          <span key={index} className="tag">
+                            {space}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Border Radius */}
+                  {safeArray(result.tokens.radius).length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Border Radius</h3>
+                      <div className="tag-list">
+                        {safeArray(result.tokens.radius).map((rad, index) => (
+                          <span key={index} className="tag">
+                            {rad}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Animations */}
+                  {safeArray(result.tokens.animations).length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Animations</h3>
+                      {safeArray(result.tokens.animations).map((anim, index) => (
+                        <div key={index} className="list-item">
+                          {anim}
                         </div>
                       ))}
                     </div>
-                  </div>
-
-                  {/* Typography */}
-                  <div className="section">
-                    <h3 className="section-title">Typography</h3>
-                    <div className="info-box">
-                      <p>
-                        <strong>Headings:</strong> {result.tokens.typography.headings}
-                      </p>
-                      <p>
-                        <strong>Body:</strong> {result.tokens.typography.body}
-                      </p>
-                      <p>
-                        <strong>Weights:</strong> {result.tokens.typography.weights.join(", ")}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Spacing */}
-                  <div className="section">
-                    <h3 className="section-title">Spacing Scale</h3>
-                    <div className="tag-list">
-                      {result.tokens.spacing.map((space, index) => (
-                        <span key={index} className="tag">
-                          {space}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Border Radius */}
-                  <div className="section">
-                    <h3 className="section-title">Border Radius</h3>
-                    <div className="tag-list">
-                      {result.tokens.radius.map((rad, index) => (
-                        <span key={index} className="tag">
-                          {rad}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Animations */}
-                  <div className="section">
-                    <h3 className="section-title">Animations</h3>
-                    {result.tokens.animations.map((anim, index) => (
-                      <div key={index} className="list-item">
-                        {anim}
-                      </div>
-                    ))}
-                  </div>
+                  )}
 
                   {/* Elevation */}
-                  <div className="section">
-                    <h3 className="section-title">Elevation / Shadows</h3>
-                    {result.tokens.elevation.map((elev, index) => (
-                      <div key={index} className="list-item">
-                        {elev}
-                      </div>
-                    ))}
-                  </div>
+                  {safeArray(result.tokens.elevation).length > 0 && (
+                    <div className="section">
+                      <h3 className="section-title">Elevation / Shadows</h3>
+                      {safeArray(result.tokens.elevation).map((elev, index) => (
+                        <div key={index} className="list-item">
+                          {elev}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Generated Prompt Card */}
                 <div className="card">
                   <h2 className="card-title">📝 Generated Prompt</h2>
-                  <textarea className="prompt-textarea" value={result.prompt} readOnly />
+                  <textarea className="prompt-textarea" value={result.prompt || ""} readOnly />
                   <div className="action-buttons">
                     <button className={`btn ${copied ? "btn-success" : "btn-primary"}`} onClick={copyPrompt}>
                       {copied ? "✓ Copied!" : "📋 Copy Prompt"}
