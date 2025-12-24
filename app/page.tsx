@@ -486,7 +486,7 @@ export default function Home() {
 
       <div className="container">
         <header className="header">
-          <h1 className="logo">DesignPrompt</h1>
+          <h1 className="logo">Axon</h1>
           <p className="tagline">Upload UI screenshots → Extract design tokens → Generate AI prompts</p>
         </header>
 

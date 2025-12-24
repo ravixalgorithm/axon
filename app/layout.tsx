@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DesignPrompt - Extract Design Tokens from UI Screenshots",
+  title: "Axon - Extract Design Tokens from UI Screenshots",
   description:
     "Upload UI design screenshots, extract design tokens (colors, fonts, spacing), and generate detailed prompts for AI code generation with Claude or GPT.",
   keywords: [
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     "React",
     "Tailwind CSS",
   ],
-  authors: [{ name: "DesignPrompt" }],
+  authors: [{ name: "Axon" }],
   openGraph: {
-    title: "DesignPrompt - Extract Design Tokens from UI Screenshots",
+    title: "Axon - Extract Design Tokens from UI Screenshots",
     description: "Upload UI designs, extract tokens, generate AI-ready prompts for code generation.",
     type: "website",
   },
