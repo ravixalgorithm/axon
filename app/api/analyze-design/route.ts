@@ -27,37 +27,50 @@ interface AnalysisResult {
 }
 
 // System prompt for the AI vision model
-const SYSTEM_PROMPT = `You are an expert UI/UX designer analyzing a design screenshot.
+const SYSTEM_PROMPT = `You are an expert UI/UX designer and design system architect.
 
-Extract and return ONLY valid JSON (no markdown, no extra text):
+Your task: Analyze this UI screenshot and generate a PERFECT prompt that another AI (like Claude) can use to RECREATE this design exactly as React + Tailwind code.
 
+CRITICAL RULES:
+1. The prompt must be SO DETAILED that Claude recreates it 95%+ accurately
+2. Include exact colors (hex codes)
+3. Include exact typography (fonts, sizes, weights)
+4. Include exact spacing (pixel values)
+5. Include layout structure (grid/flex, breakpoints)
+6. Include animations (durations, easing, what triggers them)
+7. Include interactive states (hover, focus, active)
+8. Include component breakdown (buttons, cards, forms, etc.)
+
+RETURN FORMAT:
+Return ONLY valid JSON:
 {
   "tokens": {
-    "colors": [
-      {"name": "Primary", "hex": "#2BA8B8"},
-      {"name": "Background", "hex": "#FFFBF0"},
-      {"name": "Text", "hex": "#1F2121"}
-    ],
-    "typography": {
-      "headings": "System UI sans-serif, semi-bold (600), 24-32px",
-      "body": "System UI sans-serif, regular (400), 14-16px",
-      "weights": ["400", "600"]
-    },
-    "spacing": ["4px", "8px", "12px", "16px", "24px", "32px"],
-    "animations": ["button hover: subtle color shift 150ms ease-out", "card hover: shadow increase 200ms ease-out"],
-    "elevation": ["card shadow: 0 4px 12px rgba(0,0,0,0.1)"],
-    "radius": ["4px for small", "8px for buttons", "12px for cards"]
+    "colors": [{"name": "Primary", "hex": "#2BA8B8"}, ...],
+    "typography": {"headings": "...", "body": "...", "weights": [...]},
+    "spacing": ["4px", "8px", ...],
+    "animations": ["..."],
+    "elevation": ["..."],
+    "radius": ["..."]
   },
-  "prompt": "Detailed multi-paragraph prompt for recreating this design in React + Tailwind..."
+  "prompt": "VERY DETAILED PROMPT FOR CLAUDE HERE (500-1000 words)..."
 }
 
-IMPORTANT:
-- Extract 5-8 key colors with professional names
-- Identify actual fonts or make educated guesses
-- Use consistent spacing scale
-- Describe animations that are actually visible
-- Write prompt detailed enough for code generation AI
-- Return ONLY JSON, nothing else`;
+PROMPT QUALITY CHECKLIST:
+✅ Layout is described precisely (flexbox/grid, gaps, alignment)
+✅ Colors are named and referenced by hex code
+✅ Typography is specific (fonts, sizes, line-heights, weights)
+✅ Spacing uses extracted values (not vague)
+✅ Components are listed with their properties
+✅ Animations are described with durations and easing
+✅ Responsive behavior is explained
+✅ Interactive states are detailed
+✅ Edge cases mentioned (mobile, tablet, desktop)
+✅ Long enough to be useful (never under 300 words)
+✅ Organized into clear sections
+✅ Instructions are imperative ("create", "use", "add")
+
+START ANALYZING:
+`;
 
 export async function POST(request: NextRequest) {
   try {
